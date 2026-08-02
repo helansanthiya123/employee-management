@@ -5,31 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class HourlyPermission extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'employee_id',
         'date',
-        'clock_in',
-        'clock_out',
+        'start_time',
+        'end_time',
+        'hours',
+        'reason',
         'status',
-        'is_on_break',
-        'break_start',
-        'total_break_minutes',
-        'breaks',
-        'notes',
-    ];
-
-    protected $casts = [
-        'is_on_break' => 'boolean',
-        'total_break_minutes' => 'integer',
-        'breaks' => 'array',
+        'approved_by',
     ];
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

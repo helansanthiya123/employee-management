@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\LeaveController;
+use App\Http\Controllers\Api\HourlyPermissionController;
 use App\Http\Controllers\Api\DashboardController;
 
 // Public Auth Routes
@@ -23,17 +24,23 @@ Route::middleware('auth:sanctum')->group(function () {
     // Dashboard Statistics
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
+    // Birthdays endpoint (before employees resource)
+    Route::get('/employees/birthdays', [EmployeeController::class, 'birthdays']);
+
     // Employees Management CRUD
     Route::apiResource('employees', EmployeeController::class);
-    // Explicit POST route for updating employee details (handling multipart file upload updates in PHP)
-    Route::post('/employees/{id}/update', [EmployeeController::class, 'update']);
+    Route::put('/employees/{id}/update', [EmployeeController::class, 'update']);
 
     // Departments Management CRUD
     Route::apiResource('departments', DepartmentController::class);
 
     // Attendance Management
     Route::get('/attendance/status', [AttendanceController::class, 'status']);
+    Route::get('/attendance/weekly-summary', [AttendanceController::class, 'weeklySummary']);
+    Route::get('/attendance/calendar', [AttendanceController::class, 'calendar']);
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn']);
+    Route::post('/attendance/start-break', [AttendanceController::class, 'startBreak']);
+    Route::post('/attendance/resume-work', [AttendanceController::class, 'resumeWork']);
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut']);
     Route::get('/attendance/logs', [AttendanceController::class, 'logs']);
 
@@ -41,4 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/leaves', [LeaveController::class, 'index']);
     Route::post('/leaves', [LeaveController::class, 'store']);
     Route::put('/leaves/{id}', [LeaveController::class, 'update']);
+
+    // Hourly Permission Management
+    Route::get('/hourly-permissions', [HourlyPermissionController::class, 'index']);
+    Route::post('/hourly-permissions', [HourlyPermissionController::class, 'store']);
+    Route::put('/hourly-permissions/{id}', [HourlyPermissionController::class, 'update']);
 });

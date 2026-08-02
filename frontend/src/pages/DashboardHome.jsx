@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Users, Briefcase, CheckCircle, Calendar, Clock,
   XCircle, AlertCircle, LogIn, LogOut, TrendingUp,
-  Activity,
+  Activity, Coffee, Play, Sparkles
 } from 'lucide-react';
 import api from '../api';
+import ClockProgress from '../components/ClockProgress';
+import BirthdayWidget from '../components/BirthdayWidget';
+import WeeklyProgress from '../components/WeeklyProgress';
 
 const iconMap = {
   users: Users, briefcase: Briefcase, 'check-circle': CheckCircle,
@@ -87,6 +90,34 @@ const DashboardHome = () => {
     }
   };
 
+  const handleStartBreak = async () => {
+    setClockLoading(true);
+    setMessage(null);
+    try {
+      await api.post('/attendance/start-break');
+      setMessage({ type: 'success', text: 'Break started! Enjoy your break.' });
+      fetchData();
+    } catch (err) {
+      setMessage({ type: 'danger', text: err.response?.data?.message || 'Start break failed.' });
+    } finally {
+      setClockLoading(false);
+    }
+  };
+
+  const handleResumeWork = async () => {
+    setClockLoading(true);
+    setMessage(null);
+    try {
+      await api.post('/attendance/resume-work');
+      setMessage({ type: 'success', text: 'Resumed work! Welcome back.' });
+      fetchData();
+    } catch (err) {
+      setMessage({ type: 'danger', text: err.response?.data?.message || 'Resume work failed.' });
+    } finally {
+      setClockLoading(false);
+    }
+  };
+
   const handleClockOut = async () => {
     setClockLoading(true);
     setMessage(null);
@@ -103,8 +134,10 @@ const DashboardHome = () => {
 
   if (loading) return <div className="spinner-wrapper"><div className="spinner" /></div>;
 
-  const alreadyClockedIn = attendance?.attendance && !attendance?.attendance?.clock_out;
-  const alreadyClockedOut = attendance?.attendance?.clock_out;
+  const currentAtt = attendance?.attendance;
+  const alreadyClockedIn = currentAtt && !currentAtt.clock_out;
+  const alreadyClockedOut = currentAtt && currentAtt.clock_out;
+  const isOnBreak = currentAtt?.is_on_break && alreadyClockedIn;
   const canClock = attendance?.can_clock;
 
   return (
@@ -148,6 +181,12 @@ const DashboardHome = () => {
             </div>
           )}
 
+          {/* Weekly Progress Widget (Zoho Style) */}
+          <WeeklyProgress currentAttendance={attendance?.attendance} />
+
+          {/* Birthday Widget */}
+          <BirthdayWidget />
+
           {/* Recent Activity */}
           {stats?.recent_activity && stats.recent_activity.length > 0 && (
             <div className="card">
@@ -185,53 +224,72 @@ const DashboardHome = () => {
             <h3>My Attendance</h3>
             <LiveClock />
 
+            {/* Realtime Clock Progress Line */}
+            {currentAtt && (
+              <ClockProgress attendance={currentAtt} targetHours={8} />
+            )}
+
             {message && (
               <div style={{
                 backgroundColor: message.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
                 color: message.type === 'success' ? '#6ee7b7' : '#fca5a5',
-                padding: '8px 16px', borderRadius: '8px', fontSize: '13px', marginBottom: '16px',
+                padding: '8px 16px', borderRadius: '8px', fontSize: '13px', marginBottom: '16px', marginTop: '12px',
               }}>
                 {message.text}
               </div>
             )}
 
-            {canClock ? (
-              <>
-                {!alreadyClockedIn && !alreadyClockedOut ? (
-                  <div className="attendance-status-pill">Not clocked in yet</div>
-                ) : alreadyClockedIn ? (
-                  <div className="attendance-status-pill" style={{ color: '#86efac', borderColor: '#86efac' }}>
-                    Clocked in at {attendance.attendance.clock_in}
-                  </div>
-                ) : (
-                  <div className="attendance-status-pill" style={{ color: '#fca5a5', borderColor: '#fca5a5' }}>
-                    Clocked out at {attendance.attendance.clock_out}
-                  </div>
-                )}
+            <div style={{ marginTop: '16px' }}>
+              {!currentAtt ? (
+                <div className="attendance-status-pill">Not clocked in yet</div>
+              ) : alreadyClockedIn && isOnBreak ? (
+                <div className="attendance-status-pill" style={{ color: '#f59e0b', borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)' }}>
+                  ☕ Currently On Break
+                </div>
+              ) : alreadyClockedIn ? (
+                <div className="attendance-status-pill" style={{ color: '#86efac', borderColor: '#86efac' }}>
+                  Clocked in at {currentAtt.clock_in}
+                </div>
+              ) : (
+                <div className="attendance-status-pill" style={{ color: '#fca5a5', borderColor: '#fca5a5' }}>
+                  Clocked out at {currentAtt.clock_out}
+                </div>
+              )}
 
-                {!alreadyClockedIn && !alreadyClockedOut ? (
-                  <button className="attendance-btn clock-in" onClick={handleClockIn} disabled={clockLoading}>
+              {/* Clock Actions */}
+              <div style={{ display: 'flex', gap: '10px', marginTop: '12px', justifyContent: 'center' }}>
+                {!currentAtt ? (
+                  <button className="attendance-btn clock-in" onClick={handleClockIn} disabled={clockLoading} style={{ flex: 1 }}>
                     <LogIn size={16} style={{ marginRight: '8px' }} />
                     {clockLoading ? 'Processing...' : 'Clock In'}
                   </button>
                 ) : alreadyClockedIn ? (
-                  <button className="attendance-btn clock-out" onClick={handleClockOut} disabled={clockLoading}>
-                    <LogOut size={16} style={{ marginRight: '8px' }} />
-                    {clockLoading ? 'Processing...' : 'Clock Out'}
-                  </button>
+                  <>
+                    {isOnBreak ? (
+                      <button className="attendance-btn resume-btn" onClick={handleResumeWork} disabled={clockLoading} style={{ flex: 1, backgroundColor: '#f59e0b', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 16px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        <Play size={16} style={{ marginRight: '6px' }} />
+                        {clockLoading ? 'Processing...' : 'Resume Work'}
+                      </button>
+                    ) : (
+                      <button className="attendance-btn break-btn" onClick={handleStartBreak} disabled={clockLoading} style={{ flex: 1, backgroundColor: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid #f59e0b', borderRadius: '8px', padding: '10px 16px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        <Coffee size={16} style={{ marginRight: '6px' }} />
+                        {clockLoading ? 'Processing...' : 'Take Break'}
+                      </button>
+                    )}
+
+                    <button className="attendance-btn clock-out" onClick={handleClockOut} disabled={clockLoading} style={{ flex: 1 }}>
+                      <LogOut size={16} style={{ marginRight: '6px' }} />
+                      {clockLoading ? 'Processing...' : 'Clock Out'}
+                    </button>
+                  </>
                 ) : (
-                  <button className="attendance-btn disabled" disabled>
+                  <button className="attendance-btn disabled" disabled style={{ width: '100%' }}>
                     <CheckCircle size={16} style={{ marginRight: '8px' }} />
                     Day Complete
                   </button>
                 )}
-              </>
-            ) : (
-              <>
-                <div className="attendance-status-pill">Admin / Manager Account</div>
-                <button className="attendance-btn disabled" disabled>Attendance via employee portal</button>
-              </>
-            )}
+              </div>
+            </div>
           </div>
 
           {/* Quick Info Card */}
@@ -252,8 +310,8 @@ const DashboardHome = () => {
                 <div style={{ height: '1px', backgroundColor: 'var(--border-color)' }} />
                 <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
                   {isAdminOrManager
-                    ? 'You have administrative access to manage employees, departments, attendance, and leave requests.'
-                    : 'Use the sidebar to check your attendance and manage leave requests.'}
+                    ? 'You have administrative access to manage employees, departments, attendance, break logs, and hourly permissions.'
+                    : 'Use the sidebar to manage your attendance, breaks, leaves, and hourly permissions.'}
                 </p>
               </div>
             </div>

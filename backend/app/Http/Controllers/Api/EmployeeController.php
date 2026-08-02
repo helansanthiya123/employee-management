@@ -181,4 +181,58 @@ class EmployeeController extends Controller
             'message' => 'Employee deleted successfully.',
         ]);
     }
+
+    public function birthdays()
+    {
+        $employees = Employee::with('department')
+            ->where('status', 'Active')
+            ->whereNotNull('date_of_birth')
+            ->get();
+
+        $today = \Carbon\Carbon::today();
+        $todayMonthDay = $today->format('m-d');
+
+        $todayBirthdays = [];
+        $upcomingBirthdays = [];
+
+        foreach ($employees as $emp) {
+            $dob = \Carbon\Carbon::parse($emp->date_of_birth);
+            $dobMonthDay = $dob->format('m-d');
+
+            // Calculate this year's birthday date
+            $thisYearBirthday = \Carbon\Carbon::createFromDate($today->year, $dob->month, $dob->day)->startOfDay();
+            if ($thisYearBirthday->lt($today->startOfDay())) {
+                // If already passed this year, look at next year
+                $thisYearBirthday->addYear();
+            }
+
+            $diffDays = $today->startOfDay()->diffInDays($thisYearBirthday, false);
+
+            $empData = [
+                'id' => $emp->id,
+                'full_name' => $emp->full_name,
+                'designation' => $emp->designation,
+                'department' => $emp->department ? $emp->department->name : 'N/A',
+                'date_of_birth' => $emp->date_of_birth,
+                'profile_picture' => $emp->profile_picture,
+                'days_away' => $diffDays,
+            ];
+
+            if ($dobMonthDay === $todayMonthDay) {
+                $todayBirthdays[] = $empData;
+            } elseif ($diffDays > 0 && $diffDays <= 30) {
+                $upcomingBirthdays[] = $empData;
+            }
+        }
+
+        // Sort upcoming by days away
+        usort($upcomingBirthdays, function ($a, $b) {
+            return $a['days_away'] <=> $b['days_away'];
+        });
+
+        return response()->json([
+            'today' => $todayBirthdays,
+            'upcoming' => $upcomingBirthdays,
+        ]);
+    }
 }

@@ -1544,3 +1544,468 @@ textarea.form-control {
   color: var(--warning);
   border: 1px solid rgba(245, 158, 11, 0.2);
 }
+
+/* Clock Progress Line Component */
+.clock-progress-container {
+  background: rgba(248, 250, 252, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+
+.clock-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-line-track {
+  height: 10px;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 12px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  position: relative;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.active {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.progress-bar-fill.break {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  animation: pulseBreak 2s infinite ease-in-out;
+}
+
+.progress-bar-fill.complete {
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+@keyframes pulseBreak {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.clock-progress-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-sub-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.stat-sub-val {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Birthday Widget Styles */
+.birthday-card {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.party-badge {
+  background: linear-gradient(135deg, #f43f5e, #ec4899);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.3);
+}
+
+.today-birthday-box {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+  border: 1px dashed #f43f5e;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.today-birthday-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fce7f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid #ec4899;
+}
+
+.avatar-circle img, .small-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.small-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #bfdbfe;
+}
+
+.wish-badge {
+  background-color: #fce7f3;
+  color: #be185d;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.upcoming-birthday-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upcoming-birthday-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.days-away-pill {
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #eff6ff;
+  color: var(--primary);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* Tabs and Badges */
+.tab-badge {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tab-badge.warning {
+  background-color: #f59e0b;
+}
+
+@keyframes bounceAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.bounce-anim {
+  animation: bounceAnim 1.5s infinite;
+}
+
+/* Zoho Style Weekly Progress Component */
+.weekly-progress-card {
+  border-radius: 12px;
+}
+
+.live-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: blinkDot 1.5s infinite;
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+.zoho-progress-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.zoho-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.zoho-box-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.zoho-box-value {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.zoho-box-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* 7-Day Mini Bar Breakdown */
+.zoho-bars-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  height: 140px;
+  align-items: flex-end;
+  padding-top: 10px;
+}
+
+.zoho-day-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.zoho-day-bar-col.today-col .zoho-day-label {
+  font-weight: 800;
+  color: #10b981;
+}
+
+.zoho-bar-val {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.zoho-bar-track {
+  width: 14px;
+  height: 90px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.zoho-bar-fill {
+  width: 100%;
+  border-radius: 8px;
+  transition: height 0.4s ease-out;
+}
+
+.zoho-day-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* Attendance Calendar Setup */
+.calendar-card {
+  border-radius: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-weekday-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 8px 0;
+  text-transform: uppercase;
+}
+
+.calendar-day-cell {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  min-height: 85px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-day-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-color: var(--primary);
+}
+
+.calendar-day-cell.empty {
+  background-color: #f8fafc;
+  border-style: dashed;
+  cursor: default;
+}
+
+.calendar-day-cell.empty:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border-color);
+}
+
+.calendar-day-cell.today-cell {
+  border: 2px solid var(--primary);
+  background-color: rgba(59, 130, 246, 0.02);
+}
+
+.day-cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.day-number {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.day-number.today-num {
+  background-color: var(--primary);
+  color: #ffffff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.day-status-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.day-status-pill.present {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.day-status-pill.late {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.day-status-pill.absent {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.day-status-pill.leave {
+  background-color: #fce7f3;
+  color: #9d174d;
+}
+
+.day-status-pill.weekend {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.day-cell-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+}
+
+.time-chip {
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--text-dark);
+  background: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.duration-chip {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.break-chip {
+  font-size: 10px;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.leave-chip {
+  font-size: 10px;
+  color: #be185d;
+  font-weight: 600;
+  background: #fce7f3;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.weekend-text {
+  font-size: 11px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+

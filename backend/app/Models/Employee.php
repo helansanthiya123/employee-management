@@ -49,6 +49,11 @@ class Employee extends Model
         return $this->hasMany(Leave::class);
     }
 
+    public function hourlyPermissions()
+    {
+        return $this->hasMany(HourlyPermission::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
