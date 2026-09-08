@@ -54,6 +54,21 @@ class Employee extends Model
         return $this->hasMany(HourlyPermission::class);
     }
 
+    public function onboardingTasks()
+    {
+        return $this->hasMany(OnboardingTask::class);
+    }
+
+    public function learningProgress()
+    {
+        return $this->hasMany(EmployeeLearningProgress::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";

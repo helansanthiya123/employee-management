@@ -8,6 +8,7 @@ import {
   Briefcase,
   CalendarCheck,
   CalendarDays,
+  GraduationCap,
   LogOut,
 } from 'lucide-react';
 import api from '../api';
@@ -53,6 +54,7 @@ const Dashboard = () => {
     if (path.startsWith('/departments')) return 'Department Management';
     if (path.startsWith('/attendance') || path.startsWith('/my-attendance')) return 'Attendance Ledger';
     if (path.startsWith('/leaves') || path.startsWith('/my-leaves')) return 'Leave Management';
+    if (path.startsWith('/learning')) return 'Learning & Onboarding LMS';
     return 'Workspace';
   };
 
@@ -87,6 +89,13 @@ const Dashboard = () => {
               <Link to="/">
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>
+              </Link>
+            </li>
+
+            <li className={`sidebar-menu-item ${location.pathname.startsWith('/learning') ? 'active' : ''}`}>
+              <Link to="/learning">
+                <GraduationCap size={18} />
+                <span>Learning & LMS</span>
               </Link>
             </li>
 

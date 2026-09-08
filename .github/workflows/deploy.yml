@@ -1,0 +1,49 @@
+
+name: Deploy Employee Management
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+
+          script: |
+
+            cd /var/www/employee-management
+
+            git pull origin main
+
+            echo "Deploying Laravel"
+
+            cd backend
+
+            composer install --no-dev --optimize-autoloader
+
+            php artisan migrate --force
+
+            php artisan optimize
+
+            php artisan queue:restart
+
+            cd ..
+
+            echo "Deploying React"
+
+            cd frontend
+
+            npm ci
+
+            npm run build

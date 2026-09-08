@@ -10,10 +10,15 @@ use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\LeaveController;
 use App\Http\Controllers\Api\HourlyPermissionController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\OnboardingController;
+use App\Http\Controllers\Api\LmsController;
 
 // Public Auth Routes
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Public certificate verification route
+Route::get('/lms/certificates/verify/{code}', [LmsController::class, 'verifyCertificate']);
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -53,4 +58,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/hourly-permissions', [HourlyPermissionController::class, 'index']);
     Route::post('/hourly-permissions', [HourlyPermissionController::class, 'store']);
     Route::put('/hourly-permissions/{id}', [HourlyPermissionController::class, 'update']);
+
+    // Onboarding Management
+    Route::get('/onboarding/tasks', [OnboardingController::class, 'index']);
+    Route::post('/onboarding/tasks', [OnboardingController::class, 'store']);
+    Route::patch('/onboarding/tasks/{id}/toggle', [OnboardingController::class, 'toggle']);
+    Route::delete('/onboarding/tasks/{id}', [OnboardingController::class, 'destroy']);
+    Route::post('/onboarding/seed-defaults', [OnboardingController::class, 'seedDefaults']);
+
+    // LMS & Training Modules Management
+    Route::get('/lms/stats', [LmsController::class, 'stats']);
+    Route::get('/lms/modules', [LmsController::class, 'modules']);
+    Route::get('/lms/modules/{id}', [LmsController::class, 'showModule']);
+    Route::post('/lms/modules', [LmsController::class, 'storeModule']);
+    Route::delete('/lms/modules/{id}', [LmsController::class, 'destroyModule']);
+    Route::post('/lms/modules/{id}/submit-quiz', [LmsController::class, 'submitQuiz']);
+    Route::get('/lms/certificates', [LmsController::class, 'certificates']);
 });

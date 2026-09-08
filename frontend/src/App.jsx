@@ -8,6 +8,7 @@ import Employees from './pages/Employees';
 import Departments from './pages/Departments';
 import Attendance from './pages/Attendance';
 import Leaves from './pages/Leaves';
+import LearningLms from './pages/LearningLms';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem('token');
@@ -38,6 +39,16 @@ const App = () => {
         >
           {/* Dashboard Home */}
           <Route index element={<DashboardHome />} />
+
+          {/* Shared / All Roles routes */}
+          <Route
+            path="learning"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'manager', 'employee']}>
+                <LearningLms />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin/Manager only routes */}
           <Route

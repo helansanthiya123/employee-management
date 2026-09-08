@@ -240,5 +240,8 @@ class DatabaseSeeder extends Seeder
             'status' => 'Pending',
             'approved_by' => null,
         ]);
+
+        // 6. Seed LMS & Onboarding Data
+        $this->call(LmsSeeder::class);
     }
 }
